@@ -95,7 +95,7 @@
         </ul>
       </template>
 
-      <p class="menu-label">v{{ buildVersion() }}</p>
+      <p class="menu-label">v{{ buildVersion() }} - <a @click="showDebug = true">debug</a></p>
     </div>
 
     <div class="bottom-sheet">
@@ -122,6 +122,7 @@
     <AddProjectModal :show="showProjectModal" @close="showProjectModal = false" />
     <InvitePeopleModal :show="showInviteModal" @close="showInviteModal = false" />
     <QRIdentityModal :show="showIdentity" @close="showIdentity = false" />
+    <DebugModal :show="showDebug" @close="showDebug = false" />
   </aside>
 </template>
 
@@ -152,6 +153,7 @@ import { Toast } from '@/utils/toast';
 import type { IChatChannel, IProject, IProjectFile } from '@/services/types';
 import InvitePeopleModal from './InvitePeopleModal.vue';
 import QRIdentityModal from './QRIdentityModal.vue';
+import DebugModal from "@/components/DebugModal.vue";
 
 const route = useRoute();
 const routeIsDashboard = computed(() => ['dashboard', 'join'].includes(String(route.name)));
@@ -163,6 +165,7 @@ const showChannelModal = ref(false);
 const showProjectModal = ref(false);
 const showInviteModal = ref(false);
 const showIdentity = ref(false);
+const showDebug = ref(false);
 
 // vue-tsc chokes on this type inference
 const projectTree = useTemplateRef<Array<InstanceType<typeof ProjectTree>>>('projectTree');
