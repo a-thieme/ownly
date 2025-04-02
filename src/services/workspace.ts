@@ -28,7 +28,7 @@ export class Workspace {
   private constructor(
     public readonly metadata: IWkspStats,
     private readonly api: WorkspaceAPI,
-    private readonly provider: SvsProvider,
+    public readonly provider: SvsProvider,
     public readonly chat: WorkspaceChat,
     public readonly proj: WorkspaceProjManager,
     public readonly invite: WorkspaceInviteManager,

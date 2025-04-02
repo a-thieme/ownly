@@ -24,6 +24,21 @@ export class SvsProvider {
     public readonly svs: SvsAloApi,
   ) {}
 
+  public async getState() {
+    let out = "";
+    for (const uuid of await this.db.updateListUUID()) {
+      out += uuid.toString();
+      out += ":\n";
+      for (const update of await this.db.updateGetAll(uuid)) {
+        out += update.id;
+        out += " ";
+        out += update.utime;
+        out += "\n";
+      }
+    }
+    return out;
+  }
+
   /**
    * Create a new SVS provider for a project.
    *
