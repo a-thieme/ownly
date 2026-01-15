@@ -29,6 +29,7 @@
       </div>
     </main>
   </Transition>
+  <AppPausedModal />
 </template>
 
 <script setup lang="ts">
@@ -39,6 +40,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 
 import NavBar from '@/components/NavBar.vue';
+import AppPausedModal from '@/components/PausedModal.vue'
 import LandingView from '@/views/LandingView.vue';
 
 import { GlobalBus } from '@/services/event-bus';
@@ -99,7 +101,7 @@ main.router-view {
   height: 100dvh;
   overflow-x: hidden;
 
-  > .router-view-inner {
+  >.router-view-inner {
     flex: 1;
     overflow: hidden;
 
@@ -142,7 +144,7 @@ main.router-view {
     touch-action: manipulation;
   }
 
-  main.router-view > .router-view-inner {
+  main.router-view>.router-view-inner {
     $top-bar-height: 44px;
     display: block;
     flex-direction: column;
@@ -152,6 +154,7 @@ main.router-view {
       display: block;
       padding: 6px 4px 2px 4px;
       touch-action: manipulation;
+
       .logo {
         height: 26px;
         margin-left: 2px;

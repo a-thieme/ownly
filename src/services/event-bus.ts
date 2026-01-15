@@ -43,8 +43,8 @@ export const GlobalBus = new EventEmitter() as TypedEmitter<{
   'conn-change': () => void;
 
   /**
-   * Event when agent channels are updated.
-   * @param channels List of agent channels
+   * Event when another tab is opened, so this one stops.
    */
-  'agent-channels': (channels: IAgentChannel[]) => void;
+  'app-paused': () => void;
+
 }>;

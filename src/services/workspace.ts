@@ -1,7 +1,7 @@
 import { WorkspaceChat } from './workspace-chat';
 import { WorkspaceProj, WorkspaceProjManager } from './workspace-proj';
 import { WorkspaceInviteManager } from './workspace-invite';
-import {WorkspaceAgentManager} from './workspace-agent'
+import { WorkspaceAgentManager } from './workspace-agent'
 
 import ndn from '@/services/ndn';
 import { SvsProvider } from '@/services/svs-provider';
@@ -12,6 +12,20 @@ import * as utils from '@/utils/index';
 import type { SvsAloApi, WorkspaceAPI } from '@/services/ndn';
 import type { Router } from 'vue-router';
 import type { IWkspStats } from '@/services/types';
+
+const tabChannel = new BroadcastChannel('ownly_tab_mutex')
+
+// 2. Listen for other tabs claiming control
+tabChannel.onmessage = async () => {
+  if (globalThis.ActiveWorkspace) {
+    console.log('Pausing workspace: Active in another tab');
+    // Stop the service gracefully
+    await globalThis.ActiveWorkspace.destroy();
+    globalThis.ActiveWorkspace = null;
+    // Tell the UI to show the overlay
+    GlobalBus.emit('app-paused');
+  }
+};
 
 /**
  * We keep an active instance of the open workspace.
@@ -73,6 +87,7 @@ export class Workspace {
 
       // Update workspace with agent
       (workspace as any).agent = agent;
+      tabChannel.postMessage('claim-mutex');
 
       return workspace;
     } catch (e) {
