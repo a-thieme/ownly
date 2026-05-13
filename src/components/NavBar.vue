@@ -44,6 +44,12 @@
             >
           </li>
           <li>
+            <router-link to="/help">
+              <FontAwesomeIcon class="mr-1" :icon="faLightbulb" size="sm" />
+              Getting Started</router-link
+            >
+          </li>
+          <li>
             <a href="https://github.com/pulsejet/ownly" target="_blank">
               <FontAwesomeIcon class="mr-1" :icon="faGithub" size="sm" />
               GitHub
@@ -197,6 +203,7 @@ import {
   faTableCells,
   faQrcode,
   faCircleInfo,
+  faLightbulb,
   faRobot,
   faCircleExclamation,
   faArrowsRotate,
@@ -224,7 +231,7 @@ import QRIdentityModal from './QRIdentityModal.vue';
 const route = useRoute();
 //const router = useRouter();
 const routeIsDashboard = computed(() =>
-  ['dashboard', 'join', 'about'].includes(String(route.name)),
+  ['dashboard', 'join', 'about', 'help'].includes(String(route.name)),
 );
 const routeIsWorkspace = computed(() =>
   ['space-home', 'project', 'discuss', 'project-file'].includes(String(route.name)),
