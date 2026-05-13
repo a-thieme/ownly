@@ -108,19 +108,6 @@ import { GlobalBus } from '@/services/event-bus';
 const tocIds = ['creating-workspace', 'joining-workspace', 'inviting-others'];
 let isScrolling = false;
 
-function scrollTo(id: string) {
-  const el = document.getElementById(id);
-  if (el) {
-    isScrolling = true;
-    window.location.hash = id;
-    el.scrollIntoView({ behavior: 'auto' });
-    GlobalBus.emit('help-toc-active', id);
-    setTimeout(() => {
-      isScrolling = false;
-    }, 100);
-  }
-}
-
 function handleScroll() {
   if (isScrolling) return;
 

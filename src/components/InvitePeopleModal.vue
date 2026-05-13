@@ -8,14 +8,12 @@
       address listed below using the invite link.
     </p>
 
-    <p class="mt-1">
-      <div class="invite-link-box">
-        <code class="select-all link">{{ inviteLink }}</code>
-        <button class="button invitee-list-action" @click="copyLink" title="Copy invite link">
-          <FontAwesomeIcon :icon="faCopy" />
-        </button>
-      </div>
-    </p>
+    <div class="invite-link-box mt-1">
+      <code class="select-all link">{{ inviteLink }}</code>
+      <button class="button invitee-list-action" @click="copyLink" title="Copy invite link">
+        <FontAwesomeIcon :icon="faCopy" />
+      </button>
+    </div>
 
     <p class="mt-2">Enter an email address or NDN name below</p>
 

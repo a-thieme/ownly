@@ -2,14 +2,12 @@
   <div class="box soft-if-dark demo-modal">
     <div class="title is-5 mb-4">{{ title }}</div>
     <p>{{ description }}</p>
-    <p class="mt-1">
-      <div class="invite-link-box">
-        <code class="select-all link">{{ link }}</code>
-        <button class="button invitee-list-action soft-if-dark">
-          <FontAwesomeIcon :icon="faCopy" />
-        </button>
-      </div>
-    </p>
+    <div class="invite-link-box mt-1">
+      <code class="select-all link">{{ link }}</code>
+      <button class="button invitee-list-action soft-if-dark">
+        <FontAwesomeIcon :icon="faCopy" />
+      </button>
+    </div>
     <p class="mt-2">{{ inputLabel }}</p>
     <div class="field has-addons mt-2">
       <div class="control is-expanded">
