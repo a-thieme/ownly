@@ -59,8 +59,11 @@ func (a *App) JoinWorkspace(wkspStr_ string, create bool) (wkspStr string, err e
 	// TODO: fetch workspace "metadata" and check for existence
 	// If not existing, check the create flag and proceed
 
-	// Get a valid identity key to sign the certificate
-	idSigner, _ := a.GetTestbedKey()
+	// Prefer an identity that actually owns this workspace namespace.
+	idSigner, _ := a.GetTestbedKeyForName(wkspName)
+	if idSigner == nil {
+		idSigner, _ = a.GetTestbedKey()
+	}
 	if idSigner == nil {
 		err = fmt.Errorf("no identity key found")
 		return
@@ -151,16 +154,20 @@ func (a *App) IsWorkspaceOwner(wkspStr string) (bool, error) {
 		return false, err
 	}
 
-	idKey, _ := a.GetTestbedKey()
+	idKey, _ := a.GetTestbedKeyForName(wkspName)
+	if idKey != nil {
+		return true, nil
+	}
+
+	idKey, _ = a.GetTestbedKey()
 	if idKey == nil {
 		return false, fmt.Errorf("no testbed key")
 	}
 
-	// Currently this only checks if the workspace is in the identity namespace, but in the
+	// Currently this only checks if the workspace is in an identity namespace, but in the
 	// future it should check for actual delegation (valid signer)
 	// We don't support any owner-level delegation yet.
-	idName := idKey.KeyName().Prefix(-2)
-	return idName.IsPrefix(wkspName), nil
+	return false, nil
 }
 
 // onAccessRequest handles incoming access requests if the user is owner of the workspace.
@@ -218,8 +225,11 @@ func (a *App) GetWorkspace(groupStr string, ignoreValidity bool) (api js.Value, 
 		return
 	}
 
-	// Get identity key to use (same as testbed key)
-	idKey, _ := a.GetTestbedKey()
+	// Get identity key to use, preferring the workspace owner namespace.
+	idKey, _ := a.GetTestbedKeyForName(group)
+	if idKey == nil {
+		idKey, _ = a.GetTestbedKey()
+	}
 	if idKey == nil {
 		err = fmt.Errorf("no valid testbed key found")
 		return
@@ -627,7 +637,7 @@ func (a *App) SvsAloJs(
 				RefreshPing: &tlv.RefreshPing{
 					RequestId: requestId,
 					Requester: requester,
-					SentAt:   sentAt,
+					SentAt:    sentAt,
 				},
 			}
 
@@ -638,18 +648,18 @@ func (a *App) SvsAloJs(
 
 			// Persist state
 			jsutil.Await(persistState.Invoke(jsutil.SliceToJsArray(state.Join())))
-			
+
 			return js.ValueOf(name.String()), nil
 		}),
 
-		// pub_refresh_ack(requestId: string, requester: string, responder: string, freshness: number, sentAt: string): Promise<string>;	
+		// pub_refresh_ack(requestId: string, requester: string, responder: string, freshness: number, sentAt: string): Promise<string>;
 		"pub_refresh_ack": jsutil.AsyncFunc(func(this js.Value, p []js.Value) (any, error) {
 			requestId := p[0].String()
 			requester := p[1].String()
 			responder := p[2].String()
 			Freshness := uint64(p[3].Int())
 			SentAt := p[4].String()
-			
+
 			if requestId == "" || requester == "" || responder == "" {
 				return nil, fmt.Errorf("invalid request parameters")
 			}
@@ -671,17 +681,17 @@ func (a *App) SvsAloJs(
 
 			// Persist state
 			jsutil.Await(persistState.Invoke(jsutil.SliceToJsArray(state.Join())))
-			
+
 			return js.ValueOf(name.String()), nil
 		}),
 
-		// pub_refresh_req(requestId: string, requester: string, responder: string, sentAt: string): Promise<string>;	
+		// pub_refresh_req(requestId: string, requester: string, responder: string, sentAt: string): Promise<string>;
 		"pub_refresh_req": jsutil.AsyncFunc(func(this js.Value, p []js.Value) (any, error) {
 			requestId := p[0].String()
 			requester := p[1].String()
 			responder := p[2].String()
 			SentAt := p[3].String()
-			
+
 			if requestId == "" || requester == "" || responder == "" {
 				return nil, fmt.Errorf("invalid request parameters")
 			}
@@ -702,7 +712,7 @@ func (a *App) SvsAloJs(
 
 			// Persist state
 			jsutil.Await(persistState.Invoke(jsutil.SliceToJsArray(state.Join())))
-			
+
 			return js.ValueOf(name.String()), nil
 		}),
 
@@ -899,7 +909,7 @@ func (a *App) SvsAloJs(
 						// log.Warn(a, "Ignoring unknown message", "publisher", pub.Publisher)
 					}
 				}
-				
+
 				invokeBatch := func(name string, arr js.Value) {
 					if arr.Get("length").Int() == 0 {
 						return
