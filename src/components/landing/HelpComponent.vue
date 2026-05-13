@@ -6,14 +6,14 @@
       <StepItem :number="1" title="Go to Dashboard">
         Click on <strong>Dashboard</strong> in the sidebar to access your workspaces.
         <template #visual>
-          <DemoDashboard :highlight-create="true" />
+          <DemoSidebarHome :active-item="'dashboard'" />
         </template>
       </StepItem>
 
       <StepItem :number="2" title="Create Workspace">
-        Click the <strong>Create a new workspace</strong> button and fill in the workspace details.
+        Click the <strong>Create a new workspace</strong> button.
         <template #visual>
-          <DemoCreateWorkspaceModal />
+          <DemoDashboard />
         </template>
       </StepItem>
 
@@ -28,14 +28,14 @@
       <StepItem :number="1" title="Go to Dashboard">
         Click on <strong>Dashboard</strong> in the sidebar to access your workspaces.
         <template #visual>
-          <DemoDashboard :highlight-join="true" />
+          <DemoSidebarHome :active-item="'dashboard'" />
         </template>
       </StepItem>
 
       <StepItem :number="2" title="Join Workspace">
         Click the <strong>Join a workspace</strong> button and enter the workspace details.
         <template #visual>
-          <DemoJoinWorkspaceModal />
+          <DemoDashboard />
         </template>
       </StepItem>
 
@@ -48,14 +48,18 @@
       <h2>Inviting Others</h2>
       <p>Here's how to invite someone to your workspace:</p>
 
-      <StepItem :number="1" title="Open Invite Modal">
+      <StepItem :number="1" title="Join a Workspace">
+        The <strong>Invite people</strong> menu only appears when you're inside a workspace.
+      </StepItem>
+
+      <StepItem :number="2" title="Open Invite Modal">
         Click <strong>Invite people</strong> in the sidebar under the Workspace section.
         <template #visual>
-          <DemoSidebar :show-theme="true" />
+          <DemoSidebarWorkspace :active-item="'invite'" />
         </template>
       </StepItem>
 
-      <StepItem :number="2" title="Copy the Invite Link">
+      <StepItem :number="3" title="Copy the Invite Link">
         Click the <strong>Copy Invite Link</strong> button in the modal.
         <template #visual>
           <DemoModal
@@ -65,11 +69,11 @@
         </template>
       </StepItem>
 
-      <StepItem :number="3" title="Send to Your Teammate">
+      <StepItem :number="4" title="Send to Your Teammate">
         Share the link with your teammate via chat, email, or any method you prefer.
       </StepItem>
 
-      <StepItem :number="4" title="They Join">
+      <StepItem :number="5" title="They Join">
         Your teammate opens the link and clicks <strong>Join</strong> on the dashboard.
       </StepItem>
     </section>
@@ -78,11 +82,10 @@
 
 <script setup lang="ts">
 import { onMounted, onUnmounted } from 'vue';
-import DemoSidebar from './DemoSidebar.vue';
+import DemoSidebarHome from './DemoSidebarHome.vue';
+import DemoSidebarWorkspace from './DemoSidebarWorkspace.vue';
 import DemoModal from './DemoModal.vue';
 import DemoDashboard from './DemoDashboard.vue';
-import DemoCreateWorkspaceModal from './DemoCreateWorkspaceModal.vue';
-import DemoJoinWorkspaceModal from './DemoJoinWorkspaceModal.vue';
 import StepItem from './StepItem.vue';
 import { GlobalBus } from '@/services/event-bus';
 
