@@ -17,7 +17,14 @@
         </template>
       </StepItem>
 
-      <StepItem :number="3" title="Start Collaborating">
+      <StepItem :number="3" title="Fill in Details">
+        Fill in the <strong>Dashboard Label</strong> and <strong>Name Identifier</strong> fields.
+        <template #visual>
+          <DemoCreateWorkspaceModal />
+        </template>
+      </StepItem>
+
+      <StepItem :number="4" title="Start Collaborating">
         Your workspace is ready. Invite team members or create projects and channels.
       </StepItem>
     </section>
@@ -33,13 +40,20 @@
       </StepItem>
 
       <StepItem :number="2" title="Join Workspace">
-        Click the <strong>Join a workspace</strong> button and enter the workspace details.
+        Click the <strong>Join a workspace</strong> button.
         <template #visual>
           <DemoDashboard />
         </template>
       </StepItem>
 
-      <StepItem :number="3" title="Start Collaborating">
+      <StepItem :number="3" title="Fill in Details">
+        Fill in the <strong>Dashboard Label</strong>, <strong>NDN Name</strong>, and <strong>Pre-Shared Key</strong> fields.
+        <template #visual>
+          <DemoJoinWorkspaceModal />
+        </template>
+      </StepItem>
+
+      <StepItem :number="4" title="Start Collaborating">
         You're now part of the workspace. Create projects and channels to collaborate.
       </StepItem>
     </section>
@@ -48,8 +62,8 @@
       <h2>Inviting Others</h2>
       <p>Here's how to invite someone to your workspace:</p>
 
-      <StepItem :number="1" title="Join a Workspace">
-        The <strong>Invite people</strong> menu only appears when you're inside a workspace.
+      <StepItem :number="1" title="Join a Workspace (first)">
+        The <strong>Invite people</strong> menu only appears when you're in a workspace.
       </StepItem>
 
       <StepItem :number="2" title="Open Invite Modal">
@@ -84,8 +98,10 @@
 import { onMounted, onUnmounted } from 'vue';
 import DemoSidebarHome from './DemoSidebarHome.vue';
 import DemoSidebarWorkspace from './DemoSidebarWorkspace.vue';
-import DemoModal from './DemoModal.vue';
 import DemoDashboard from './DemoDashboard.vue';
+import DemoCreateWorkspaceModal from './DemoCreateWorkspaceModal.vue';
+import DemoJoinWorkspaceModal from './DemoJoinWorkspaceModal.vue';
+import DemoModal from './DemoModal.vue';
 import StepItem from './StepItem.vue';
 import { GlobalBus } from '@/services/event-bus';
 

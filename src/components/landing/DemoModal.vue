@@ -5,7 +5,7 @@
     <p class="mt-1">
       <div class="invite-link-box">
         <code class="select-all link">{{ link }}</code>
-        <button class="button invitee-list-action">
+        <button class="button invitee-list-action soft-if-dark">
           <FontAwesomeIcon :icon="faCopy" />
         </button>
       </div>
@@ -13,10 +13,10 @@
     <p class="mt-2">{{ inputLabel }}</p>
     <div class="field has-addons mt-2">
       <div class="control is-expanded">
-        <input class="input" type="text" :placeholder="placeholder" disabled />
+        <input class="input soft-if-dark" type="text" :placeholder="placeholder" disabled />
       </div>
       <div class="control">
-        <button class="button is-primary" disabled>Add</button>
+        <button class="button is-primary soft-if-dark" disabled>Add</button>
       </div>
     </div>
   </div>

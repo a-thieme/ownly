@@ -28,7 +28,7 @@
 
     <div class="field has-text-right">
       <div class="control">
-        <button class="button is-light mr-2">Cancel</button>
+        <button class="button mr-2">Cancel</button>
         <button class="button is-primary">Join</button>
       </div>
     </div>

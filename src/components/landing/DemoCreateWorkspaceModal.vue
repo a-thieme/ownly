@@ -1,5 +1,5 @@
 <template>
-  <div class="box demo-modal">
+  <div class="box soft-if-dark demo-modal">
     <div class="title is-5 mb-4">Create Workspace</div>
 
     <div class="field">
@@ -25,7 +25,7 @@
 
     <div class="field mt-2 has-text-right">
       <div class="control">
-        <button class="button is-light mr-2">Cancel</button>
+        <button class="button mr-2">Cancel</button>
         <button class="button is-primary">Create</button>
       </div>
     </div>
