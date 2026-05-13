@@ -48,6 +48,16 @@
               <FontAwesomeIcon class="mr-1" :icon="faLightbulb" size="sm" />
               Getting Started</router-link
             >
+            <ul v-if="route.name === 'help'" class="menu-list help-toc">
+              <li v-for="item in helpTocItems" :key="item.id">
+                <a
+                  :class="{ 'is-active': activeHelpSection === item.id }"
+                  @click="scrollToHelp(item.id)"
+                >
+                  {{ item.label }}
+                </a>
+              </li>
+            </ul>
           </li>
           <li>
             <a href="https://github.com/pulsejet/ownly" target="_blank">
@@ -260,6 +270,22 @@ const projectFiles = ref([] as IProjectFile[]);
 
 const connState = ref(globalThis._ndnd_conn_state);
 
+const helpTocItems = [
+  { id: 'creating-workspace', label: 'Creating a Workspace' },
+  { id: 'joining-workspace', label: 'Joining a Workspace' },
+  { id: 'inviting-others', label: 'Inviting Others' },
+];
+const activeHelpSection = ref('creating-workspace');
+
+function scrollToHelp(id: string) {
+  activeHelpSection.value = id;
+  window.location.hash = id;
+  const el = document.getElementById(id);
+  if (el) {
+    el.scrollIntoView({ behavior: 'auto' });
+  }
+}
+
 const busListeners = {
   'project-list': (projs: IProject[]) => (projects.value = projs),
   'project-files': (name: string, files: IProjectFile[]) => {
@@ -272,6 +298,9 @@ const busListeners = {
     if (!connState.value.connected) {
       Toast.info('Disconnected - you are offline');
     }
+  },
+  'help-toc-active': (id: string) => {
+    activeHelpSection.value = id;
   },
 };
 
@@ -314,6 +343,7 @@ onMounted(async () => {
   GlobalBus.addListener('project-files', busListeners['project-files']);
   GlobalBus.addListener('chat-channels', busListeners['chat-channels']);
   GlobalBus.addListener('conn-change', busListeners['conn-change']);
+  GlobalBus.addListener('help-toc-active', busListeners['help-toc-active']);
   interval = setInterval(() => {
     setNotification();
   },
@@ -329,6 +359,7 @@ onUnmounted(() => {
   GlobalBus.removeListener('project-files', busListeners['project-files']);
   GlobalBus.removeListener('chat-channels', busListeners['chat-channels']);
   GlobalBus.removeListener('conn-change', busListeners['conn-change']);
+  GlobalBus.removeListener('help-toc-active', busListeners['help-toc-active']);
   clearInterval(interval);
   preferredDark?.removeEventListener('change', onThemeMediaChange);
 });
@@ -773,6 +804,50 @@ async function sosRequest() {
   &:hover .sidebar-resizer::before,
   &.resizing .sidebar-resizer::before {
     background: rgba(255, 255, 255, 0.22);
+  }
+
+  .help-toc {
+    list-style: none;
+    margin: 4px 0px 4px 10px;
+    padding: 0 0 0 16px;
+    border-left: 1px solid rgba(255, 255, 255, 0.12);
+    position: relative;
+
+    li {
+      margin: 0;
+      padding: 0;
+      position: relative;
+
+      a {
+        display: block;
+        padding: 6px 10px;
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.8);
+        text-decoration: none;
+        border-radius: 6px;
+        position: relative;
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.06);
+        }
+
+        &.is-active {
+          background: rgba(255, 255, 255, 0.08);
+          color: white;
+
+          &::before {
+            content: '';
+            position: absolute;
+            left: -17px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            border-radius: 6px;
+            background: var(--sidebar-highlight-bg);
+          }
+        }
+      }
+    }
   }
 }
 </style>

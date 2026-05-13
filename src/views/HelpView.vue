@@ -11,7 +11,6 @@ onMounted(() => {
 <template>
   <main class="has-background-primary soft-if-dark">
     <div class="help-content">
-      <h1 class="title">Help</h1>
       <HelpComponent />
     </div>
   </main>
