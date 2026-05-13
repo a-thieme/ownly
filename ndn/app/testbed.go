@@ -31,12 +31,29 @@ var testbedPrefix = enc.Name{enc.NewGenericComponent("ndn")}
 // GetTestbedKey returns the testbed key, or nil if not found.
 // Returns the latest valid certificate from the keychain.
 func (a *App) GetTestbedKey() (ndn.Signer, time.Time) {
+	return a.getTestbedKey(nil)
+}
+
+// GetTestbedKeyForName returns the best testbed key whose identity is a prefix
+// of name, or nil if no matching identity is found.
+func (a *App) GetTestbedKeyForName(name enc.Name) (ndn.Signer, time.Time) {
+	return a.getTestbedKey(func(idName enc.Name) bool {
+		return idName.IsPrefix(name)
+	})
+}
+
+func (a *App) getTestbedKey(match func(enc.Name) bool) (ndn.Signer, time.Time) {
 	// TODO: move most of this to NDNd
 
 	var bestSigner ndn.Signer
 	var bestExpiry time.Time
+	bestIdentityLen := -1
 	for _, id := range a.keychain.Identities() {
-		if !testbedPrefix.IsPrefix(id.Name()) {
+		idName := id.Name()
+		if !testbedPrefix.IsPrefix(idName) {
+			continue
+		}
+		if match != nil && !match(idName) {
 			continue
 		}
 
@@ -62,9 +79,22 @@ func (a *App) GetTestbedKey() (ndn.Signer, time.Time) {
 				// Get certificate expiry
 				log.Info(nil, "Found valid testbed cert", "name", certData.Name())
 				_, notAfter := certData.Signature().Validity()
-				if val, ok := notAfter.Get(); ok && (bestExpiry.IsZero() || bestExpiry.Before(val)) {
+				val, ok := notAfter.Get()
+				if !ok {
+					continue
+				}
+
+				identityLen := len(idName)
+				isBetter := bestSigner == nil || bestExpiry.Before(val)
+				if match != nil {
+					isBetter = identityLen > bestIdentityLen ||
+						(identityLen == bestIdentityLen && bestExpiry.Before(val))
+				}
+
+				if isBetter {
 					bestSigner = key.Signer()
 					bestExpiry = val
+					bestIdentityLen = identityLen
 				}
 			}
 		}

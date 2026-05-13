@@ -61,6 +61,12 @@ export class Workspace {
       api = await ndn.api.get_workspace(metadata.name, metadata.ignore);
       await api.start();
 
+      const owner = await ndn.api.is_workspace_owner(metadata.name);
+      if (metadata.owner !== owner) {
+        metadata.owner = owner;
+        await _o.stats.put(metadata.name, metadata);
+      }
+
       // Check if we have the encryption keys
       if (!metadata.psk) throw new Error('Missing PSK');
       if (!metadata.dsk) await Workspace.findDskRoutine(metadata, api);
