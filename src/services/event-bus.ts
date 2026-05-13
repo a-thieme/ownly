@@ -47,4 +47,10 @@ export const GlobalBus = new EventEmitter() as TypedEmitter<{
    * @param channels List of agent channels
    */
   'agent-channels': (channels: IAgentChannel[]) => void;
+
+  /**
+   * Event when the active help section changes.
+   * @param id Section ID that is now active
+   */
+  'help-toc-active': (id: string) => void;
 }>;

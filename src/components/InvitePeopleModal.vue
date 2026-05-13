@@ -8,15 +8,25 @@
       address listed below using the invite link.
     </p>
 
-    <p class="mt-1">
+    <div class="invite-link-box mt-1">
       <code class="select-all link">{{ inviteLink }}</code>
-    </p>
+      <button class="button invitee-list-action" @click="copyLink" title="Copy invite link">
+        <FontAwesomeIcon :icon="faCopy" />
+      </button>
+    </div>
 
     <p class="mt-2">Enter an email address or NDN name below</p>
 
-    <div class="field mt-2">
-      <input class="input" type="text" :placeholder="`name@example.com or /user-name`" v-model="inviteInput"
-        :disabled="!isOwner" @keydown.enter.prevent="addInvitees(inviteInput)" @paste="addInviteesOnPaste" autofocus />
+    <div class="field has-addons mt-2">
+      <div class="control is-expanded">
+        <input class="input" type="text" :placeholder="`name@example.com or /user-name`" v-model="inviteInput"
+          :disabled="!isOwner" @keydown.enter.prevent="addInvitees(inviteInput)" @paste="addInviteesOnPaste" autofocus />
+      </div>
+      <div class="control">
+        <button class="button is-primary" @click="addInvitees(inviteInput)" :disabled="!isOwner">
+          Add
+        </button>
+      </div>
     </div>
 
     <div class="invitee-management">
@@ -429,9 +439,42 @@ function displayProfileName(name: string): string {
   return utils.stripNdnPrefixForDisplay(name);
 }
 
+async function copyLink() {
+  await navigator.clipboard.writeText(inviteLink.value);
+  Toast.success('Invite link copied to clipboard!');
+}
+
 </script>
 
 <style scoped lang="scss">
+.invite-link-box {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.05);
+  overflow-x: auto;
+
+  code {
+    background: transparent;
+    padding: 0;
+    word-break: break-all;
+    font-size: 0.85rem;
+    flex: 1;
+  }
+
+  .invitee-list-action {
+    flex-shrink: 0;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
 .textarea {
   resize: none;
 }
