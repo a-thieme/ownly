@@ -14,6 +14,9 @@
         <FontAwesomeIcon :icon="faCopy" />
       </button>
     </div>
+    <p v-if="inviteCreated" class="has-text-success has-text-weight-semibold mt-2">
+      Invitations are ready. Share this link with the people you added.
+    </p>
 
     <p class="mt-2">Enter an email address or NDN name below</p>
 
@@ -114,9 +117,11 @@
                   @click="removeInvitee(item.name)" title="Remove this pending invitee">
                   <FontAwesomeIcon :icon="faXmark" />
                 </button>
-                <button class="button invitee-list-action" v-else @click="() => { /*TODO: menu*/ }" title="Menu" disabled="true">
-                  <FontAwesomeIcon :icon="faBars" />
-                </button>
+                <span v-else title="Revoke access is not implemented yet">
+                  <button class="button invitee-list-action" disabled="true" aria-label="Revoke access is not implemented yet">
+                    <FontAwesomeIcon :icon="faBars" />
+                  </button>
+                </span>
               </div>
             </div>
           </DynamicScrollerItem>
@@ -130,10 +135,12 @@
 
     <div class="field has-text-right mt-2">
       <div class="control">
-        <button class="button mr-2" @click="emit('close')">Cancel</button>
+        <button class="button mr-2" @click="emit('close')">
+          {{ pendingInvitees.length > 0 ? 'Cancel' : 'Close' }}
+        </button>
         <button class="button is-primary soft-if-dark mr-2" @click="send"
           :disabled="!isOwner || pendingInvitees.length == 0">
-          Invite
+          Create invitations
         </button>
       </div>
     </div>
@@ -181,6 +188,7 @@ const members = ref([] as string[]);
 const invitees = ref([] as IProfile[]);
 const pendingInvitees = ref([] as IProfile[]);
 const pendingRequests = ref([] as IProfile[]);
+const inviteCreated = ref(false);
 const displayMembers = computed(() =>
   members.value.map((member) => utils.stripNdnPrefixForDisplay(member)),
 );
@@ -218,6 +226,7 @@ watch(
 
     invitees.value = wksp.value.invite.getInviteArray();
     pendingInvitees.value.length = 0; // clear pending invitees
+    inviteCreated.value = false;
     pendingRequests.value.length = 0;
     _access_requests.forEach((requester) => {
       if (wksp.value?.metadata.name == requester[0] && !requester[2]) // requester[2] is false if request has not been dealt with yet
@@ -316,6 +325,7 @@ function addInvitee(invitee: string) {
 
   // Add to pending invitee list
   pendingInvitees.value.push(new_profile);
+  inviteCreated.value = false;
 }
 
 // Add an access request to the pending list
@@ -431,8 +441,11 @@ async function send() {
   }
 
   // Finish
-  Toast.success(`Invited ${pendingInvitees.value.length} users to workspace!`);
-  emit('close');
+  const sentInvitees = [...pendingInvitees.value];
+  pendingInvitees.value.length = 0;
+  invitees.value.push(...sentInvitees);
+  inviteCreated.value = true;
+  Toast.success(`Invited ${sentInvitees.length} users to workspace!`);
 }
 
 function displayProfileName(name: string): string {

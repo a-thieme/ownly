@@ -142,8 +142,8 @@
         <ul class="menu-list">
           <li>
             <a @click="showInviteModal = true">
-              <FontAwesomeIcon class="mr-1" :icon="faPlus" size="sm" />
-              Invite people
+              <FontAwesomeIcon class="mr-1" :icon="faUsers" size="sm" />
+              People & access
 
               <FontAwesomeIcon v-show="showNotifBubble" class="mr-1" :icon="faCircleExclamation" size="sm"></FontAwesomeIcon>
             </a>
@@ -220,6 +220,7 @@ import {
   faGear,
   faMoon,
   faSun,
+  faUsers,
 } from '@fortawesome/free-solid-svg-icons';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 
