@@ -1,5 +1,4 @@
 import type * as Y from 'yjs';
-import { hashElementsVersion } from '@excalidraw/excalidraw';
 import type { ExcalidrawElement, Theme } from '@excalidraw/excalidraw/element/types';
 import type { AppState, BinaryFileData, BinaryFiles } from '@excalidraw/excalidraw/types';
 import type { ImportedDataState } from '@excalidraw/excalidraw/data/types';
@@ -40,7 +39,7 @@ export const excalidrawToFile = (
   return {
     elements,
     type: 'excalidraw',
-    version: hashElementsVersion(elements),
+    version: 2, // Excalidraw scene format version
     source: globalThis.origin,
     appState: appState ?? {
       gridSize: 20,
